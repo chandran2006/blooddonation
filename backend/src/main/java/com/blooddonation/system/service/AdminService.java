@@ -1,0 +1,45 @@
+package com.blooddonation.system.service;
+
+import com.blooddonation.system.dto.UserDTO;
+import com.blooddonation.system.entity.User;
+import com.blooddonation.system.exception.ResourceNotFoundException;
+import com.blooddonation.system.repository.UserRepository;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
+import java.util.stream.Collectors;
+
+@Service
+@RequiredArgsConstructor
+public class AdminService {
+
+    private final UserRepository userRepository;
+
+    public List<UserDTO> getAllUsers() {
+        List<User> users = userRepository.findAll();
+        return users.stream()
+                .map(this::mapToDTO)
+                .collect(Collectors.toList());
+    }
+
+    @Transactional
+    public void deleteUser(Long id) {
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found with id: " + id));
+        userRepository.delete(user);
+    }
+
+    private UserDTO mapToDTO(User user) {
+        UserDTO dto = new UserDTO();
+        dto.setId(user.getId());
+        dto.setName(user.getName());
+        dto.setEmail(user.getEmail());
+        dto.setPhone(user.getPhone());
+        dto.setCity(user.getCity());
+        dto.setRole(user.getRole().name());
+        dto.setEnabled(user.isEnabled());
+        return dto;
+    }
+}
