@@ -1,8 +1,10 @@
 package com.blooddonation.system.service;
 
 import com.blooddonation.system.dto.UserDTO;
+import com.blooddonation.system.entity.PatientRequest;
 import com.blooddonation.system.entity.User;
 import com.blooddonation.system.exception.ResourceNotFoundException;
+import com.blooddonation.system.repository.PatientRequestRepository;
 import com.blooddonation.system.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -16,6 +18,7 @@ import java.util.stream.Collectors;
 public class AdminService {
 
     private final UserRepository userRepository;
+    private final PatientRequestRepository patientRequestRepository;
 
     public List<UserDTO> getAllUsers() {
         List<User> users = userRepository.findAll();
@@ -29,6 +32,10 @@ public class AdminService {
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found with id: " + id));
         userRepository.delete(user);
+    }
+
+    public List<PatientRequest> getAllRequests() {
+        return patientRequestRepository.findAll();
     }
 
     private UserDTO mapToDTO(User user) {

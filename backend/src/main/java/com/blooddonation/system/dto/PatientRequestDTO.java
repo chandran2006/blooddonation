@@ -24,4 +24,7 @@ public class PatientRequestDTO {
     private LocalDateTime requestDate;
     private String status;
     private String createdByEmail;
+    private String acceptedByName;
+    private String acceptedByEmail;
+    private LocalDateTime acceptedDate;
 }

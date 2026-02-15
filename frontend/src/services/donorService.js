@@ -15,4 +15,9 @@ export const donorService = {
     const response = await api.get('/donor/requests');
     return response.data;
   },
+
+  acceptRequest: async (requestId) => {
+    const response = await api.put(`/donor/accept-request/${requestId}`);
+    return response.data;
+  },
 };

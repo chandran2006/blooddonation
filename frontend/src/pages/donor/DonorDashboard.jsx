@@ -56,6 +56,7 @@ const DonorDashboard = () => {
   const handleAvailabilityToggle = async () => {
     const eligibility = checkDonationEligibility(profile?.lastDonationDate);
     
+    // Only block if trying to enable availability when not eligible
     if (!eligibility.eligible && !profile?.available) {
       alert(`You can donate again after ${eligibility.daysRemaining} days (${getNextEligibleDate(profile?.lastDonationDate)})`);
       return;
@@ -63,10 +64,12 @@ const DonorDashboard = () => {
 
     setUpdatingAvailability(true);
     try {
-      await donorService.updateProfile({ available: !profile?.available });
-      await fetchData();
+      const newAvailability = !profile?.available;
+      await donorService.updateProfile({ available: newAvailability });
+      setProfile({ ...profile, available: newAvailability });
     } catch (error) {
       console.error('Error updating availability:', error);
+      alert('Failed to update availability. Please try again.');
     } finally {
       setUpdatingAvailability(false);
     }
@@ -123,10 +126,11 @@ const DonorDashboard = () => {
                       <input
                         className="form-check-input"
                         type="checkbox"
-                        style={{ width: '60px', height: '30px' }}
-                        checked={profile?.available}
+                        role="switch"
+                        style={{ width: '60px', height: '30px', cursor: 'pointer' }}
+                        checked={profile?.available || false}
                         onChange={handleAvailabilityToggle}
-                        disabled={updatingAvailability || (!eligibility.eligible && !profile?.available)}
+                        disabled={updatingAvailability}
                       />
                     </div>
                     <span className={`badge bg-${profile?.available ? 'success' : 'secondary'} mt-2`}>
@@ -217,6 +221,8 @@ const DonorDashboard = () => {
                         <th>Urgency</th>
                         <th>Date</th>
                         <th>Status</th>
+                        <th>Accepted By</th>
+                        <th>Action</th>
                       </tr>
                     </thead>
                     <tbody>
@@ -245,6 +251,35 @@ const DonorDashboard = () => {
                           <td>{formatDateTime(req.requestDate)}</td>
                           <td>
                             <span className="badge bg-info">{req.status}</span>
+                          </td>
+                          <td>
+                            {req.acceptedByName ? (
+                              <div>
+                                <strong>{req.acceptedByName}</strong>
+                                <br />
+                                <small className="text-muted">{req.acceptedByEmail}</small>
+                              </div>
+                            ) : (
+                              <span className="text-muted">-</span>
+                            )}
+                          </td>
+                          <td>
+                            {req.status === 'PENDING' && (
+                              <button 
+                                className="btn btn-sm btn-success"
+                                onClick={async () => {
+                                  try {
+                                    await donorService.acceptRequest(req.id);
+                                    fetchData();
+                                    alert('Request accepted successfully!');
+                                  } catch (error) {
+                                    alert('Failed to accept request');
+                                  }
+                                }}
+                              >
+                                <i className="bi bi-check-circle me-1"></i>Accept
+                              </button>
+                            )}
                           </td>
                         </tr>
                       ))}

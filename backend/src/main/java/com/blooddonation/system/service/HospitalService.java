@@ -50,6 +50,25 @@ public class HospitalService {
                 .collect(Collectors.toList());
     }
 
+    @Transactional
+    public PatientRequestDTO updateRequestStatus(Long requestId, String status) {
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
+        
+        PatientRequest request = patientRequestRepository.findById(requestId)
+                .orElseThrow(() -> new ResourceNotFoundException("Request not found"));
+        request.setStatus(PatientRequest.Status.valueOf(status.toUpperCase()));
+        
+        if ("ACCEPTED".equalsIgnoreCase(status)) {
+            request.setAcceptedBy(user);
+            request.setAcceptedDate(LocalDateTime.now());
+        }
+        
+        request = patientRequestRepository.save(request);
+        return mapToDTO(request);
+    }
+
     private PatientRequestDTO mapToDTO(PatientRequest request) {
         PatientRequestDTO dto = new PatientRequestDTO();
         dto.setId(request.getId());
@@ -61,6 +80,11 @@ public class HospitalService {
         dto.setRequestDate(request.getRequestDate());
         dto.setStatus(request.getStatus().name());
         dto.setCreatedByEmail(request.getCreatedBy().getEmail());
+        if (request.getAcceptedBy() != null) {
+            dto.setAcceptedByName(request.getAcceptedBy().getName());
+            dto.setAcceptedByEmail(request.getAcceptedBy().getEmail());
+            dto.setAcceptedDate(request.getAcceptedDate());
+        }
         return dto;
     }
 }

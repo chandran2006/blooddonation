@@ -40,9 +40,12 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/api/auth/**", "/swagger-ui/**", "/v3/api-docs/**").permitAll()
                         .requestMatchers("/api/admin/**").hasRole("ADMIN")
+                        .requestMatchers("/api/donor/recommend/**", "/api/donor/contact").hasAnyRole("PATIENT", "HOSPITAL", "ADMIN")
                         .requestMatchers("/api/donor/**").hasRole("DONOR")
                         .requestMatchers("/api/patient/**").hasRole("PATIENT")
                         .requestMatchers("/api/hospital/**").hasRole("HOSPITAL")
+                        .requestMatchers("/api/reports/status/**", "/api/reports/*/action").hasRole("ADMIN")
+                        .requestMatchers("/api/reports").authenticated()
                         .anyRequest().authenticated()
                 )
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))

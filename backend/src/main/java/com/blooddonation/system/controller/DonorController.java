@@ -42,4 +42,10 @@ public class DonorController {
         List<PatientRequestDTO> requests = donorService.getAllRequests();
         return ResponseEntity.ok(requests);
     }
+
+    @PutMapping("/accept-request/{requestId}")
+    @Operation(summary = "Accept blood request")
+    public ResponseEntity<PatientRequestDTO> acceptRequest(@PathVariable Long requestId) {
+        return ResponseEntity.ok(donorService.acceptRequest(requestId));
+    }
 }

@@ -1,5 +1,6 @@
 package com.blooddonation.system.service;
 
+import com.blooddonation.system.dto.DonorContactDTO;
 import com.blooddonation.system.dto.DonorDTO;
 import com.blooddonation.system.dto.PatientRequestDTO;
 import com.blooddonation.system.dto.UpdateDonorRequest;
@@ -65,6 +66,35 @@ public class DonorService {
                 .collect(Collectors.toList());
     }
 
+    @Transactional
+    public PatientRequestDTO acceptRequest(Long requestId) {
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
+        
+        PatientRequest request = patientRequestRepository.findById(requestId)
+                .orElseThrow(() -> new ResourceNotFoundException("Request not found"));
+        request.setStatus(PatientRequest.Status.ACCEPTED);
+        request.setAcceptedBy(user);
+        request.setAcceptedDate(LocalDateTime.now());
+        request = patientRequestRepository.save(request);
+        return mapRequestToDTO(request);
+    }
+
+    @Transactional
+    public void contactDonor(DonorContactDTO contactDTO) {
+        // Fetch donor
+        Donor donor = donorRepository.findById(contactDTO.getDonorId())
+                .orElseThrow(() -> new ResourceNotFoundException("Donor not found"));
+        
+        // Mark donor as unavailable after contact
+        donor.setAvailable(false);
+        donorRepository.save(donor);
+        
+        // Here you can add email/SMS notification logic
+        // sendNotificationToDonor(donor, contactDTO.getMessage());
+    }
+
     private DonorDTO mapToDTO(Donor donor) {
         DonorDTO dto = new DonorDTO();
         dto.setId(donor.getId());
@@ -90,6 +120,11 @@ public class DonorService {
         dto.setRequestDate(request.getRequestDate());
         dto.setStatus(request.getStatus().name());
         dto.setCreatedByEmail(request.getCreatedBy().getEmail());
+        if (request.getAcceptedBy() != null) {
+            dto.setAcceptedByName(request.getAcceptedBy().getName());
+            dto.setAcceptedByEmail(request.getAcceptedBy().getEmail());
+            dto.setAcceptedDate(request.getAcceptedDate());
+        }
         return dto;
     }
 }

@@ -1,6 +1,7 @@
 package com.blooddonation.system.controller;
 
 import com.blooddonation.system.dto.UserDTO;
+import com.blooddonation.system.entity.PatientRequest;
 import com.blooddonation.system.service.AdminService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
@@ -32,5 +33,11 @@ public class AdminController {
     public ResponseEntity<String> deleteUser(@PathVariable Long id) {
         adminService.deleteUser(id);
         return ResponseEntity.ok("User deleted successfully");
+    }
+
+    @GetMapping("/requests")
+    @Operation(summary = "Get all patient requests")
+    public ResponseEntity<List<PatientRequest>> getAllRequests() {
+        return ResponseEntity.ok(adminService.getAllRequests());
     }
 }

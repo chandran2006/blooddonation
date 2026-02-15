@@ -44,6 +44,13 @@ public class PatientRequest {
     @JoinColumn(name = "created_by", nullable = false)
     private User createdBy;
     
+    @ManyToOne
+    @JoinColumn(name = "accepted_by")
+    private User acceptedBy;
+    
+    @Column(name = "accepted_date")
+    private LocalDateTime acceptedDate;
+    
     public enum UrgencyLevel {
         NORMAL, EMERGENCY
     }

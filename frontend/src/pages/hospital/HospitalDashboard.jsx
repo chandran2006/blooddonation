@@ -213,7 +213,8 @@ const HospitalDashboard = () => {
                         <th>Urgency</th>
                         <th>Date</th>
                         <th>Status</th>
-                        <th>Created By</th>
+                        <th>Accepted By</th>
+                        <th>Action</th>
                       </tr>
                     </thead>
                     <tbody>
@@ -239,7 +240,35 @@ const HospitalDashboard = () => {
                               {req.status}
                             </span>
                           </td>
-                          <td>{req.createdByEmail}</td>
+                          <td>
+                            {req.acceptedByName ? (
+                              <div>
+                                <strong>{req.acceptedByName}</strong>
+                                <br />
+                                <small className="text-muted">{req.acceptedByEmail}</small>
+                              </div>
+                            ) : (
+                              <span className="text-muted">-</span>
+                            )}
+                          </td>
+                          <td>
+                            {req.status === 'PENDING' && (
+                              <button 
+                                className="btn btn-sm btn-success"
+                                onClick={async () => {
+                                  try {
+                                    await hospitalService.updateRequestStatus(req.id, 'ACCEPTED');
+                                    fetchRequests();
+                                    alert('Request accepted successfully!');
+                                  } catch (error) {
+                                    alert('Failed to accept request');
+                                  }
+                                }}
+                              >
+                                <i className="bi bi-check-circle me-1"></i>Accept
+                              </button>
+                            )}
+                          </td>
                         </tr>
                       ))}
                     </tbody>

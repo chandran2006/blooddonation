@@ -65,6 +65,11 @@ public class PatientService {
         dto.setRequestDate(request.getRequestDate());
         dto.setStatus(request.getStatus().name());
         dto.setCreatedByEmail(request.getCreatedBy().getEmail());
+        if (request.getAcceptedBy() != null) {
+            dto.setAcceptedByName(request.getAcceptedBy().getName());
+            dto.setAcceptedByEmail(request.getAcceptedBy().getEmail());
+            dto.setAcceptedDate(request.getAcceptedDate());
+        }
         return dto;
     }
 }

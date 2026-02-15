@@ -108,6 +108,7 @@ const PatientDashboard = () => {
                         <th>Urgency</th>
                         <th>Date</th>
                         <th>Status</th>
+                        <th>Accepted By</th>
                       </tr>
                     </thead>
                     <tbody>
@@ -127,6 +128,17 @@ const PatientDashboard = () => {
                             <span className={`badge bg-${getStatusColor(req.status)}`}>
                               {req.status}
                             </span>
+                          </td>
+                          <td>
+                            {req.acceptedByName ? (
+                              <div>
+                                <strong className="text-success">{req.acceptedByName}</strong>
+                                <br />
+                                <small className="text-muted">{req.acceptedByEmail}</small>
+                              </div>
+                            ) : (
+                              <span className="text-muted">Waiting...</span>
+                            )}
                           </td>
                         </tr>
                       ))}

@@ -13,6 +13,7 @@ const Signup = () => {
     bloodGroup: '',
     hospitalName: '',
     licenseNumber: '',
+    adminSecretKey: '',
   });
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
@@ -25,6 +26,13 @@ const Signup = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
+    
+    // Validate admin secret key
+    if (formData.role === 'ADMIN' && formData.adminSecretKey !== 'RPHM') {
+      setError('Invalid admin secret key. Please contact administrator.');
+      return;
+    }
+    
     setLoading(true);
 
     try {
@@ -140,6 +148,22 @@ const Signup = () => {
                     </select>
                   </div>
                 </div>
+
+                {formData.role === 'ADMIN' && (
+                  <div className="mb-3">
+                    <label className="form-label">Admin Secret Key *</label>
+                    <input
+                      type="password"
+                      className="form-control"
+                      name="adminSecretKey"
+                      value={formData.adminSecretKey}
+                      onChange={handleChange}
+                      placeholder="Enter admin secret key"
+                      required
+                    />
+                    <small className="text-muted">Contact administrator for the secret key</small>
+                  </div>
+                )}
 
                 {formData.role === 'DONOR' && (
                   <div className="mb-3">

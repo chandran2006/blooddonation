@@ -10,4 +10,9 @@ export const adminService = {
     const response = await api.delete(`/admin/delete/${id}`);
     return response.data;
   },
+
+  getAllRequests: async () => {
+    const response = await api.get('/admin/requests');
+    return response.data;
+  },
 };

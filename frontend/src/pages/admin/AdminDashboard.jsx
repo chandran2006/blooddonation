@@ -4,13 +4,14 @@ import Navbar from '../../components/Navbar';
 import Sidebar from '../../components/Sidebar';
 import Loading from '../../components/Loading';
 import StatsCard from '../../components/StatsCard';
+import ReportManagement from '../../components/ReportManagement';
 import { adminService } from '../../services/adminService';
-import { patientService } from '../../services/patientService';
 
 const AdminDashboard = () => {
   const [users, setUsers] = useState([]);
   const [requests, setRequests] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [showReports, setShowReports] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -21,7 +22,7 @@ const AdminDashboard = () => {
     try {
       const [usersData, requestsData] = await Promise.all([
         adminService.getAllUsers(),
-        patientService.getMyRequests().catch(() => [])
+        adminService.getAllRequests()
       ]);
       setUsers(usersData);
       setRequests(requestsData);
@@ -75,10 +76,21 @@ const AdminDashboard = () => {
         <div className="flex-grow-1 p-4" style={{ overflow: 'auto' }}>
           <div className="d-flex justify-content-between align-items-center mb-4">
             <h2 className="mb-0">Admin Dashboard</h2>
-            <button className="btn btn-danger" onClick={() => navigate('/admin/users')}>
-              <i className="bi bi-people me-2"></i>Manage Users
-            </button>
+            <div className="d-flex gap-2">
+              <button className="btn btn-warning" onClick={() => setShowReports(!showReports)}>
+                <i className="bi bi-flag-fill me-2"></i>{showReports ? 'Hide Reports' : 'View Reports'}
+              </button>
+              <button className="btn btn-danger" onClick={() => navigate('/admin/users')}>
+                <i className="bi bi-people me-2"></i>Manage Users
+              </button>
+            </div>
           </div>
+
+          {showReports && (
+            <div className="mb-4">
+              <ReportManagement />
+            </div>
+          )}
 
           {/* User Statistics */}
           <h5 className="mb-3">User Statistics</h5>

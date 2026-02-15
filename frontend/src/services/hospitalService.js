@@ -10,4 +10,9 @@ export const hospitalService = {
     const response = await api.get('/hospital/all-requests');
     return response.data;
   },
+
+  updateRequestStatus: async (requestId, status) => {
+    const response = await api.put(`/hospital/update-status/${requestId}?status=${status}`);
+    return response.data;
+  },
 };

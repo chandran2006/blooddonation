@@ -35,4 +35,12 @@ public class HospitalController {
         List<PatientRequestDTO> requests = hospitalService.getAllRequests();
         return ResponseEntity.ok(requests);
     }
+
+    @PutMapping("/update-status/{requestId}")
+    @Operation(summary = "Update request status")
+    public ResponseEntity<PatientRequestDTO> updateRequestStatus(
+            @PathVariable Long requestId, 
+            @RequestParam String status) {
+        return ResponseEntity.ok(hospitalService.updateRequestStatus(requestId, status));
+    }
 }
