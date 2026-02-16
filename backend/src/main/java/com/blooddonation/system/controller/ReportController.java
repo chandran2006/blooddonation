@@ -37,6 +37,12 @@ public class ReportController {
         return ResponseEntity.ok(reportService.getReportsByStatus(status));
     }
 
+    @GetMapping("/my-reports")
+    @Operation(summary = "Get my submitted reports")
+    public ResponseEntity<List<Report>> getMyReports() {
+        return ResponseEntity.ok(reportService.getMyReports());
+    }
+
     @PutMapping("/{reportId}/action")
     @Operation(summary = "Take action on report (Admin only)")
     public ResponseEntity<Report> takeAction(@PathVariable Long reportId, @RequestBody ReportActionDTO actionDTO) {

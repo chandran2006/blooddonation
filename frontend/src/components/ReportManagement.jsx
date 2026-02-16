@@ -38,6 +38,15 @@ const ReportManagement = () => {
     }
   };
 
+  const markAsResolved = async (reportId) => {
+    try {
+      await takeAction(reportId, { status: 'RESOLVED', actionTaken: 'Marked as resolved by admin' });
+      fetchReports();
+    } catch (error) {
+      alert('Failed to mark as resolved');
+    }
+  };
+
   const getStatusColor = (status) => {
     const colors = { PENDING: 'warning', REVIEWED: 'info', RESOLVED: 'success', DISMISSED: 'secondary' };
     return colors[status] || 'secondary';
@@ -74,12 +83,32 @@ const ReportManagement = () => {
                   <td>{new Date(report.reportDate).toLocaleDateString()}</td>
                   <td><Badge bg={getStatusColor(report.status)}>{report.status}</Badge></td>
                   <td>
-                    <Button 
-                      size="sm" 
-                      onClick={() => { setSelectedReport(report); setShowActionModal(true); }}
-                    >
-                      {t('takeAction') || 'Take Action'}
-                    </Button>
+                    {report.status === 'PENDING' ? (
+                      <div className="d-flex gap-1">
+                        <Button 
+                          size="sm"
+                          variant="success"
+                          onClick={() => markAsResolved(report.id)}
+                        >
+                          Mark Resolved
+                        </Button>
+                        <Button 
+                          size="sm"
+                          variant="primary"
+                          onClick={() => { setSelectedReport(report); setShowActionModal(true); }}
+                        >
+                          Details
+                        </Button>
+                      </div>
+                    ) : (
+                      <Button 
+                        size="sm"
+                        variant="secondary"
+                        onClick={() => { setSelectedReport(report); setShowActionModal(true); }}
+                      >
+                        View
+                      </Button>
+                    )}
                   </td>
                 </tr>
               ))}

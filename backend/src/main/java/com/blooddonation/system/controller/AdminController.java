@@ -1,7 +1,7 @@
 package com.blooddonation.system.controller;
 
+import com.blooddonation.system.dto.PatientRequestDTO;
 import com.blooddonation.system.dto.UserDTO;
-import com.blooddonation.system.entity.PatientRequest;
 import com.blooddonation.system.service.AdminService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
@@ -37,7 +37,7 @@ public class AdminController {
 
     @GetMapping("/requests")
     @Operation(summary = "Get all patient requests")
-    public ResponseEntity<List<PatientRequest>> getAllRequests() {
+    public ResponseEntity<List<PatientRequestDTO>> getAllRequests() {
         return ResponseEntity.ok(adminService.getAllRequests());
     }
 }

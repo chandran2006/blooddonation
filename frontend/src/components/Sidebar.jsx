@@ -6,21 +6,28 @@ const Sidebar = () => {
   const role = authService.getRole();
 
   const getMenuItems = () => {
+    const commonItems = [
+      { path: '/my-reports', icon: 'bi-flag-fill', label: 'My Reports' },
+    ];
+
     switch (role) {
       case 'DONOR':
         return [
           { path: '/donor/dashboard', icon: 'bi-speedometer2', label: 'Dashboard' },
           { path: '/donor/profile', icon: 'bi-person', label: 'Profile' },
+          ...commonItems,
         ];
       case 'PATIENT':
         return [
           { path: '/patient/dashboard', icon: 'bi-speedometer2', label: 'Dashboard' },
           { path: '/patient/create-request', icon: 'bi-plus-circle', label: 'Create Request' },
+          ...commonItems,
         ];
       case 'HOSPITAL':
         return [
           { path: '/hospital/dashboard', icon: 'bi-speedometer2', label: 'Dashboard' },
           { path: '/hospital/create-request', icon: 'bi-plus-circle', label: 'Create Request' },
+          ...commonItems,
         ];
       case 'ADMIN':
         return [

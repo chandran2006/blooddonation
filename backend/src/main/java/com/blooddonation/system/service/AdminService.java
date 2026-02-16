@@ -1,5 +1,6 @@
 package com.blooddonation.system.service;
 
+import com.blooddonation.system.dto.PatientRequestDTO;
 import com.blooddonation.system.dto.UserDTO;
 import com.blooddonation.system.entity.PatientRequest;
 import com.blooddonation.system.entity.User;
@@ -34,8 +35,11 @@ public class AdminService {
         userRepository.delete(user);
     }
 
-    public List<PatientRequest> getAllRequests() {
-        return patientRequestRepository.findAll();
+    public List<PatientRequestDTO> getAllRequests() {
+        List<PatientRequest> requests = patientRequestRepository.findAll();
+        return requests.stream()
+                .map(this::mapRequestToDTO)
+                .collect(Collectors.toList());
     }
 
     private UserDTO mapToDTO(User user) {
@@ -47,6 +51,25 @@ public class AdminService {
         dto.setCity(user.getCity());
         dto.setRole(user.getRole().name());
         dto.setEnabled(user.isEnabled());
+        return dto;
+    }
+
+    private PatientRequestDTO mapRequestToDTO(PatientRequest request) {
+        PatientRequestDTO dto = new PatientRequestDTO();
+        dto.setId(request.getId());
+        dto.setPatientName(request.getPatientName());
+        dto.setBloodGroup(request.getBloodGroup());
+        dto.setHospitalName(request.getHospitalName());
+        dto.setCity(request.getCity());
+        dto.setUrgencyLevel(request.getUrgencyLevel().name());
+        dto.setRequestDate(request.getRequestDate());
+        dto.setStatus(request.getStatus().name());
+        dto.setCreatedByEmail(request.getCreatedBy().getEmail());
+        if (request.getAcceptedBy() != null) {
+            dto.setAcceptedByName(request.getAcceptedBy().getName());
+            dto.setAcceptedByEmail(request.getAcceptedBy().getEmail());
+            dto.setAcceptedDate(request.getAcceptedDate());
+        }
         return dto;
     }
 }

@@ -12,6 +12,9 @@ export const createReport = (reportData) =>
 export const getAllReports = () => 
   axios.get(API_URL, getAuthHeader());
 
+export const getMyReports = () => 
+  axios.get(`${API_URL}/my-reports`, getAuthHeader());
+
 export const getReportsByStatus = (status) => 
   axios.get(`${API_URL}/status/${status}`, getAuthHeader());
 

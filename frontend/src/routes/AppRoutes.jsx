@@ -10,6 +10,7 @@ import HospitalDashboard from '../pages/hospital/HospitalDashboard';
 import CreateHospitalRequest from '../pages/hospital/CreateHospitalRequest';
 import AdminDashboard from '../pages/admin/AdminDashboard';
 import ManageUsers from '../pages/admin/ManageUsers';
+import MyReports from '../pages/MyReports';
 
 const AppRoutes = () => {
   return (
@@ -86,6 +87,16 @@ const AppRoutes = () => {
           element={
             <ProtectedRoute allowedRole="ADMIN">
               <ManageUsers />
+            </ProtectedRoute>
+          }
+        />
+
+        {/* Common Routes */}
+        <Route
+          path="/my-reports"
+          element={
+            <ProtectedRoute>
+              <MyReports />
             </ProtectedRoute>
           }
         />

@@ -7,6 +7,7 @@ import StatsCard from '../../components/StatsCard';
 import EmptyState from '../../components/EmptyState';
 import Badge from '../../components/Badge';
 import EmergencyBadge from '../../components/EmergencyBadge';
+import ReportButton from '../../components/ReportButton';
 import { donorService } from '../../services/donorService';
 import { checkDonationEligibility, getNextEligibleDate } from '../../utils/eligibility';
 import { formatDateTime } from '../../utils/helpers';
@@ -100,7 +101,10 @@ const DonorDashboard = () => {
         <div className="flex-grow-1 p-4" style={{ overflow: 'auto' }}>
           <div className="d-flex justify-content-between align-items-center mb-4">
             <h2 className="mb-0">Donor Dashboard</h2>
-            <Badge donations={profile?.totalDonations || 0} />
+            <div className="d-flex gap-2">
+              <ReportButton userId={1} userName="System" />
+              <Badge donations={profile?.totalDonations || 0} />
+            </div>
           </div>
 
           {/* Profile Card */}

@@ -6,6 +6,7 @@ import Loading from '../../components/Loading';
 import StatsCard from '../../components/StatsCard';
 import EmptyState from '../../components/EmptyState';
 import EmergencyBadge from '../../components/EmergencyBadge';
+import ReportButton from '../../components/ReportButton';
 import { hospitalService } from '../../services/hospitalService';
 import { formatDateTime, getStatusColor } from '../../utils/helpers';
 
@@ -80,9 +81,12 @@ const HospitalDashboard = () => {
         <div className="flex-grow-1 p-4" style={{ overflow: 'auto' }}>
           <div className="d-flex justify-content-between align-items-center mb-4">
             <h2 className="mb-0">Hospital Dashboard</h2>
-            <button className="btn btn-danger" onClick={() => navigate('/hospital/create-request')}>
-              <i className="bi bi-plus-circle me-2"></i>Create Request
-            </button>
+            <div className="d-flex gap-2">
+              <ReportButton userId={1} userName="System" />
+              <button className="btn btn-danger" onClick={() => navigate('/hospital/create-request')}>
+                <i className="bi bi-plus-circle me-2"></i>Create Request
+              </button>
+            </div>
           </div>
 
           {/* Statistics */}

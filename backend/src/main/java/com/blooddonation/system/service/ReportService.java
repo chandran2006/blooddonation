@@ -7,6 +7,7 @@ import com.blooddonation.system.entity.User;
 import com.blooddonation.system.repository.ReportRepository;
 import com.blooddonation.system.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
@@ -39,6 +40,15 @@ public class ReportService {
 
     public List<Report> getReportsByStatus(Report.ReportStatus status) {
         return reportRepository.findByStatusOrderByReportDateDesc(status);
+    }
+
+    public List<Report> getMyReports() {
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+        return reportRepository.findAllByOrderByReportDateDesc().stream()
+                .filter(report -> report.getReporter().getId().equals(user.getId()))
+                .toList();
     }
 
     @Transactional

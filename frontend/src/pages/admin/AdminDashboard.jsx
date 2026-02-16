@@ -5,13 +5,16 @@ import Sidebar from '../../components/Sidebar';
 import Loading from '../../components/Loading';
 import StatsCard from '../../components/StatsCard';
 import ReportManagement from '../../components/ReportManagement';
+import EmergencyBadge from '../../components/EmergencyBadge';
 import { adminService } from '../../services/adminService';
+import { formatDateTime, getStatusColor } from '../../utils/helpers';
 
 const AdminDashboard = () => {
   const [users, setUsers] = useState([]);
   const [requests, setRequests] = useState([]);
   const [loading, setLoading] = useState(true);
   const [showReports, setShowReports] = useState(false);
+  const [showRequests, setShowRequests] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -77,6 +80,9 @@ const AdminDashboard = () => {
           <div className="d-flex justify-content-between align-items-center mb-4">
             <h2 className="mb-0">Admin Dashboard</h2>
             <div className="d-flex gap-2">
+              <button className="btn btn-info" onClick={() => setShowRequests(!showRequests)}>
+                <i className="bi bi-clipboard-check me-2"></i>{showRequests ? 'Hide Requests' : 'View All Requests'}
+              </button>
               <button className="btn btn-warning" onClick={() => setShowReports(!showReports)}>
                 <i className="bi bi-flag-fill me-2"></i>{showReports ? 'Hide Reports' : 'View Reports'}
               </button>
@@ -89,6 +95,71 @@ const AdminDashboard = () => {
           {showReports && (
             <div className="mb-4">
               <ReportManagement />
+            </div>
+          )}
+
+          {showRequests && (
+            <div className="card shadow-sm mb-4">
+              <div className="card-header">
+                <h5 className="mb-0"><i className="bi bi-list-ul me-2"></i>All Blood Requests</h5>
+              </div>
+              <div className="card-body">
+                <div className="table-responsive">
+                  <table className="table table-hover">
+                    <thead>
+                      <tr>
+                        <th>Patient</th>
+                        <th>Blood Group</th>
+                        <th>Hospital</th>
+                        <th>City</th>
+                        <th>Urgency</th>
+                        <th>Date</th>
+                        <th>Status</th>
+                        <th>Created By</th>
+                        <th>Accepted By</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {requests.map((req) => (
+                        <tr 
+                          key={req.id}
+                          className={req.urgencyLevel === 'EMERGENCY' ? 'table-danger' : ''}
+                        >
+                          <td><strong>{req.patientName}</strong></td>
+                          <td><span className="badge bg-danger">{req.bloodGroup}</span></td>
+                          <td>{req.hospitalName}</td>
+                          <td><i className="bi bi-geo-alt-fill me-1"></i>{req.city}</td>
+                          <td>
+                            {req.urgencyLevel === 'EMERGENCY' ? (
+                              <EmergencyBadge />
+                            ) : (
+                              <span className="badge bg-warning">NORMAL</span>
+                            )}
+                          </td>
+                          <td>{formatDateTime(req.requestDate)}</td>
+                          <td>
+                            <span className={`badge bg-${getStatusColor(req.status)}`}>
+                              {req.status}
+                            </span>
+                          </td>
+                          <td><small>{req.createdByEmail}</small></td>
+                          <td>
+                            {req.acceptedByName ? (
+                              <div>
+                                <strong className="text-success">{req.acceptedByName}</strong>
+                                <br />
+                                <small className="text-muted">{req.acceptedByEmail}</small>
+                              </div>
+                            ) : (
+                              <span className="text-muted">-</span>
+                            )}
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
             </div>
           )}
 
