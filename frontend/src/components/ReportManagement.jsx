@@ -13,6 +13,14 @@ const ReportManagement = () => {
 
   useEffect(() => {
     fetchReports();
+    
+    // Auto-refresh every 3 seconds
+    const interval = setInterval(() => {
+      fetchReports();
+    }, 3000);
+    
+    // Cleanup interval on unmount
+    return () => clearInterval(interval);
   }, []);
 
   const fetchReports = async () => {
